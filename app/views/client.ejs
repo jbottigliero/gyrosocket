@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>gyrosocket</title>
+    <link rel='stylesheet' href='/css/style.css' />
+  </head>
+  <body>
+
+    <p>welcome to gyrosocket:client</p>
+    <small>your gyrosocket:</small>
+
+    <pre id="gyro"></pre>
+    
+  </body>
+  <script src="http://192.168.1.111:<%=socket%>/socket.io/socket.io.js"></script>
+  <script src="js/shared.js"></script>
+
+  <script>
+    (function(){
+
+        var socket = io.connect('http://192.168.1.111:<%=socket%>');
+
+        window.ondevicemotion = function(e) {
+
+            var accel = {
+                x: e.accelerationIncludingGravity.x,
+                y: e.accelerationIncludingGravity.y,
+                x: e.accelerationIncludingGravity.z,
+                rotation: e.rotationRate
+            };
+
+            // if (accel.rotation != null) {
+            //     accel.alpha  = Math.round(accel.rotation.alpha);
+            //     accel.beta   = Math.round(accel.rotation.beta);
+            //     accel.gamma  = Math.round(accel.rotation.gamma);
+            // }
+
+            socket.emit('<%=path%>_accel', accel);
+            
+            gyro.innerText = textify(accel);
+
+        }
+
+        window.ondeviceorientation = function(e) {
+            
+        }   
+
+    }());
+  </script>
+</html>

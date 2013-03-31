@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>gyrosocket</title>
+    <link rel='stylesheet' href='/css/style.css' />
+  </head>
+  <body>
+
+    <p>welcome to gyrosocket:viewer</p>
+    <small>your gyrosocket:</small>
+    <pre>
+        path   : <%= path   %>
+        port   : <%= port   %>   
+        socket : <%= socket %>
+    </pre>
+
+    <pre id="gyro"></pre>
+
+  </body>
+  <script src="http://localhost:<%=socket%>/socket.io/socket.io.js"></script>
+  <script src="js/shared.js"></script>
+  <script>
+
+    (function(){
+
+        var socket = io.connect('http://localhost:<%=socket%>');
+
+        socket.on('<%=path%>_accel_listen', function (data) {
+            gyro.innerText = textify(data);
+        });
+
+    }());
+
+  </script>
+
+</html>
