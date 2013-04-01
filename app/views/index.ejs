@@ -16,9 +16,13 @@
 
     <pre id="gyro"></pre>
 
+
+    <div id="three-js"></div>
+
   </body>
   <script src="http://localhost:<%=socket%>/socket.io/socket.io.js"></script>
   <script src="js/shared.js"></script>
+  <script src="js/lib/three.js"></script>
   <script>
 
     (function(){
@@ -27,7 +31,44 @@
 
         socket.on('<%=path%>_accel_listen', function (data) {
             gyro.innerText = textify(data);
+        
+            animate(data.rotation.alpha, data.rotation.beta, data.rotation.gamma);
+            //animate(data.x, data.y);
         });
+
+
+        // three.js
+        
+        var camera, scene, renderer;
+        var geometry, material, mesh;
+
+        var width   = 400,
+            height  = 300;
+
+        camera = new THREE.PerspectiveCamera( 75, width / height, 1, 10000 );
+        camera.position.z = 1000;
+
+        scene = new THREE.Scene();
+
+        geometry = new THREE.CubeGeometry( 400, 600, 20 );
+        material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+
+        mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
+
+        renderer = new THREE.CanvasRenderer();
+        renderer.setSize( width, height );
+
+        document.getElementById('three-js').appendChild( renderer.domElement );
+
+        animate();
+
+        function animate() {
+            mesh.rotation.x = (arguments[0] || 0) * Math.PI / 180;
+            mesh.rotation.y = (arguments[1] || 0) * Math.PI / 180;
+            //mesh.rotation.z = (arguments[2] || 0) * Math.PI / 180;
+            renderer.render( scene, camera );
+        }
 
     }());
 
